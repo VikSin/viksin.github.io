@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Micoplay — Mico World: Creative Play for Kids</title>
+<meta content="Mico World is a playful world where kids explore, discover, create and use their imagination. Color, draw, find hidden objects and build your own little world." name="description"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Quicksand & Nunito for soft, playful, rounded aesthetics -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&amp;family=Quicksand:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FAF7F0',
+            warmIvory: '#F7F3E9',
+            cardBg: '#FFFFFF',
+            brandOrange: '#F9844A',
+            brandBlue: '#4EA8DE',
+            brandYellow: '#F9C74F',
+            brandGreen: '#90BE6D',
+            brandCharcoal: '#212529',
+            brandMuted: '#6C757D',
+            brandBorder: '#1E2022'
+          },
+          fontFamily: {
+            sans: ['Nunito', 'sans-serif'],
+            display: ['Quicksand', 'Nunito', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles: Decorative Linework, Transitions & Carousel -->
+<style data-purpose="custom-styling">
+    body {
+      background-color: #FAF7F0;
+      color: #212529;
+      font-family: 'Nunito', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Chunky cartoon line art aesthetic */
+    .border-thick {
+      border: 3.5px solid #212529;
+    }
+    .border-shelf {
+      border-bottom: 4px solid #212529;
+    }
+
+    /* Gentle floating bounce animation for interactive hints */
+    @keyframes gentleBounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(6px);
+      }
+    }
+    .animate-gentle-bounce {
+      animation: gentleBounce 2s ease-in-out infinite;
+    }
+
+    /* Interactive button press feel */
+    .chunky-btn {
+      box-shadow: 0 4px 0 #1E2022;
+      transition: all 0.15s ease-in-out;
+    }
+    .chunky-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #1E2022;
+    }
+    .chunky-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #1E2022;
+    }
+
+    /* Dot Carousel (no JavaScript — pure CSS) */
+    .slide-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .slide-text,
+    .slide-media {
+      display: none;
+    }
+
+    #slide-1:checked ~ .game-grid .slide-text-1,
+    #slide-1:checked ~ .game-grid .slide-media-1 { display: block; }
+    #slide-2:checked ~ .game-grid .slide-text-2,
+    #slide-2:checked ~ .game-grid .slide-media-2 { display: block; }
+    #slide-3:checked ~ .game-grid .slide-text-3,
+    #slide-3:checked ~ .game-grid .slide-media-3 { display: block; }
+    #slide-4:checked ~ .game-grid .slide-text-4,
+    #slide-4:checked ~ .game-grid .slide-media-4 { display: block; }
+    #slide-5:checked ~ .game-grid .slide-text-5,
+    #slide-5:checked ~ .game-grid .slide-media-5 { display: block; }
+    #slide-6:checked ~ .game-grid .slide-text-6,
+    #slide-6:checked ~ .game-grid .slide-media-6 { display: block; }
+    #slide-7:checked ~ .game-grid .slide-text-7,
+    #slide-7:checked ~ .game-grid .slide-media-7 { display: block; }
+    #slide-8:checked ~ .game-grid .slide-text-8,
+    #slide-8:checked ~ .game-grid .slide-media-8 { display: block; }
+
+    .slide-media {
+      position: absolute;
+      inset: 0;
+    }
+    .slide-media > * {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 9999px;
+      background: rgba(33, 37, 41, 0.3);
+      border: 2px solid rgba(33, 37, 41, 0.5);
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .dot:hover {
+      background: rgba(33, 37, 41, 0.55);
+    }
+    #slide-1:checked ~ .game-grid .dot-1,
+    #slide-2:checked ~ .game-grid .dot-2,
+    #slide-3:checked ~ .game-grid .dot-3,
+    #slide-4:checked ~ .game-grid .dot-4,
+    #slide-5:checked ~ .game-grid .dot-5,
+    #slide-6:checked ~ .game-grid .dot-6,
+    #slide-7:checked ~ .game-grid .dot-7,
+    #slide-8:checked ~ .game-grid .dot-8 {
+      background: #F9844A;
+      border-color: #212529;
+      transform: scale(1.25);
+      box-shadow: 0 2px 0 #1E2022;
+    }
+  </style>
+</head>
+<body class="bg-cream text-brandCharcoal min-h-screen flex flex-col justify-between selection:bg-brandOrange selection:text-white">
+<!-- BEGIN: MainHeader -->
+<header class="w-full bg-cream py-5 px-6 sm:px-12 md:px-20 flex items-center justify-between z-30" data-purpose="site-navigation-header">
+<!-- Brand Logo on Left (larger & more visible) -->
+<a aria-label="Micoplay Home — Mico Play" class="flex items-center transition-transform hover:scale-105" href="#hero">
+<img alt="Micoplay — Mico Play logo" class="h-9 sm:h-10 md:h-12 w-auto" src="assets/logo_mico_play.png"/>
+</a>
+<!-- Primary Nav Links -->
+<nav aria-label="Main Navigation" class="hidden md:flex items-center space-x-10 text-[16px] font-bold tracking-wide">
+<a class="text-brandCharcoal hover:text-brandOrange transition-colors" href="#hero">Main</a>
+<a class="text-brandCharcoal hover:text-brandOrange transition-colors" href="#game">The Game</a>
+<a class="text-brandCharcoal hover:text-brandOrange transition-colors" href="#story">Story</a>
+<a class="text-brandCharcoal hover:text-brandOrange transition-colors" href="#devlog">Roadmap</a>
+</nav>
+<!-- Primary Action Button -->
+<div class="flex items-center gap-3">
+<a class="chunky-btn inline-flex px-5 py-2.5 bg-brandOrange text-white font-black text-sm uppercase tracking-wider rounded-2xl border-thick" href="demo.html">
+            Play Demo
+          </a>
+</div>
+</header>
+<!-- END: MainHeader -->
+<main>
+<!-- BEGIN: HeroSection -->
+<section class="pt-10 pb-0 text-center relative overflow-hidden flex flex-col items-center justify-between" data-purpose="landing-hero" id="hero">
+<!-- Headline & Subtitle -->
+<div class="max-w-3xl mx-auto px-4 mb-8">
+<h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-brandCharcoal uppercase font-display mb-3">
+          MICOPLAY
+        </h1>
+<p class="text-base sm:text-lg md:text-xl font-bold text-neutral-600 max-w-xl mx-auto">
+          Mico World — Create, color, draw &amp; explore a playful world full of hidden surprises.
+        </p>
+</div>
+<!-- Character Parade / Peeking Lineup Shelf -->
+<div class="w-full max-w-5xl mx-auto px-4 pt-8">
+<img alt="Mico World banner — the Mico Play characters in their cozy world" class="w-full h-auto select-none pointer-events-none" src="assets/mico_banner.png"/>
+</div>
+<!-- Circular Down-Arrow Badge -->
+<div class="relative -top-5 z-20">
+<a aria-label="Scroll to game showcase" class="w-10 h-10 sm:w-11 sm:h-11 bg-brandCharcoal text-white rounded-full flex items-center justify-center shadow hover:bg-neutral-800 transition-all animate-gentle-bounce" href="#game">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</a>
+</div>
+</section>
+<!-- END: HeroSection -->
+
+<!-- BEGIN: GameIntro / Showcase with Dot Carousel -->
+<section class="w-full py-16 sm:py-24 px-6 sm:px-12 md:px-20 max-w-7xl mx-auto" data-purpose="game-intro-showcase" id="game">
+<!-- Hidden radio inputs driving the pure-CSS carousel -->
+<input type="radio" name="game-slide" id="slide-1" class="slide-input" checked hidden/>
+<input type="radio" name="game-slide" id="slide-2" class="slide-input" hidden/>
+<input type="radio" name="game-slide" id="slide-3" class="slide-input" hidden/>
+<input type="radio" name="game-slide" id="slide-4" class="slide-input" hidden/>
+<input type="radio" name="game-slide" id="slide-5" class="slide-input" hidden/>
+<input type="radio" name="game-slide" id="slide-6" class="slide-input" hidden/>
+<input type="radio" name="game-slide" id="slide-7" class="slide-input" hidden/>
+<input type="radio" name="game-slide" id="slide-8" class="slide-input" hidden/>
+
+<div class="game-grid grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+<!-- Left Side Column: Slide descriptions -->
+<div class="lg:col-span-4 flex flex-col justify-center text-left relative" data-purpose="game-intro-details">
+<div class="mb-6">
+<span class="inline-block px-3 py-1 bg-brandOrange/15 text-brandOrange font-black text-xs uppercase tracking-widest rounded-full mb-3">
+              EXPLORE &amp; CREATE
+            </span>
+<h2 class="text-2xl sm:text-3xl font-black text-brandCharcoal uppercase font-display tracking-tight leading-snug">
+              MICO WORLD: CREATIVE KIDS GAME
+            </h2>
+<p class="text-brandMuted font-bold text-base mt-2">
+              Search for hidden objects, color pictures, draw your own creations and design your own little world.
+            </p>
+</div>
+
+<!-- Slide 1 text -->
+<div class="slide-text slide-text-1">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">01</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">Mico World Trailer</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">A playful world of curious characters, hidden surprises, creative play, and endless little discoveries.</p>
+</div>
+
+<!-- Slide 2 text -->
+<div class="slide-text slide-text-2">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">02</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">Welcome to Mico World</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">Mico World is available now on Google Play — jump in and start playing today.</p>
+</div>
+
+<!-- Slide 3 text -->
+<div class="slide-text slide-text-3">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">03</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">Explore &amp; Find Hidden Objects</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">Look closely and discover surprises hidden throughout each world — tucked behind paintings, lamps, shelves and other interactive places.</p>
+</div>
+
+<!-- Slide 4 text -->
+<div class="slide-text slide-text-4">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">04</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">Play, Color &amp; Create!</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">Jump into a playful level screen where kids color pictures and build up their very own little world, one bright scene at a time.</p>
+</div>
+
+<!-- Slide 5 text -->
+<div class="slide-text slide-text-5">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">05</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">Draw Your Own Things</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">A blank canvas for little artists — draw animals, toys and scenes from pure imagination, then bring them into the world.</p>
+</div>
+
+<!-- Slide 6 text -->
+<div class="slide-text slide-text-6">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">06</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">Your Doodles Become Stories</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">Custom hand-drawn doodles come to life and star in your very own stories — a simple sketch can become part of the Mico World.</p>
+</div>
+
+<!-- Slide 7 text -->
+<div class="slide-text slide-text-7">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">07</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">So Much to Discover</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">The Garden Level is packed with items to pick up and explore — keep tapping to uncover every hidden surprise.</p>
+</div>
+
+<!-- Slide 8 text -->
+<div class="slide-text slide-text-8">
+<div class="flex items-baseline gap-1 font-black">
+<span class="text-4xl text-brandCharcoal">08</span>
+<span class="text-xl text-neutral-400 font-bold">/08</span>
+</div>
+<h3 class="text-xl font-black text-brandCharcoal uppercase mt-1 tracking-tight">Ant World — Design Your Own World</h3>
+<p class="text-sm sm:text-base font-semibold text-neutral-600 mt-1 leading-relaxed">Mix and arrange 500+ items — decorations, plants, food, animals, toys — to build tiny scenes and tell your own stories.</p>
+</div>
+</div>
+
+<!-- Right Side Column: Game Tablet Mockup with Carousel Media -->
+<div class="lg:col-span-8 w-full" data-purpose="interactive-device-frame">
+<div class="relative bg-brandCharcoal p-3 sm:p-4 rounded-[32px] sm:rounded-[40px] shadow-2xl border-4 border-brandCharcoal">
+<!-- Tablet Inner Screen Container -->
+<div class="relative rounded-[22px] sm:rounded-[28px] overflow-hidden bg-[#FAF7F0] aspect-[16/9] border-2 border-brandCharcoal/10">
+
+<!-- Slide 1 media: Mico World Intro Trailer (looping video) -->
+<div class="slide-media slide-media-1">
+<video class="w-full h-full object-cover select-none pointer-events-none" autoplay muted loop playsinline preload="auto" poster="assets/tablet_1.png">
+<source src="assets/micoworld_Intro.mp4" type="video/mp4"/>
+Your browser does not support the video tag.
+</video>
+</div>
+
+<!-- Slide 2 media: splash screen -->
+<div class="slide-media slide-media-2">
+<img alt="Welcome to Mico World — splash screen with the game title" class="w-full h-full object-cover select-none pointer-events-none" src="assets/tablet_1.png"/>
+</div>
+
+<!-- Slide 3 media: find hidden objects -->
+<div class="slide-media slide-media-3">
+<img alt="Explore and find hidden objects in Mico World" class="w-full h-full object-cover select-none pointer-events-none" src="assets/tablet_2.png"/>
+</div>
+
+<!-- Slide 4 media: play, color and create -->
+<div class="slide-media slide-media-4">
+<img alt="Play, color and create your own world in Mico World" class="w-full h-full object-cover select-none pointer-events-none" src="assets/tablet_3.png"/>
+</div>
+
+<!-- Slide 5 media: draw your own things -->
+<div class="slide-media slide-media-5">
+<img alt="Draw your own things in Mico World" class="w-full h-full object-cover select-none pointer-events-none" src="assets/tablet_4.png"/>
+</div>
+
+<!-- Slide 6 media: hand-drawn doodle stories -->
+<div class="slide-media slide-media-6">
+<img alt="Custom hand-drawn doodles become stories in Mico World" class="w-full h-full object-cover select-none pointer-events-none" src="assets/tablet_5.png"/>
+</div>
+
+<!-- Slide 7 media: garden level discovery -->
+<div class="slide-media slide-media-7">
+<img alt="Garden level with lots of items to discover in Mico World" class="w-full h-full object-cover select-none pointer-events-none" src="assets/tablet_6.png"/>
+</div>
+
+<!-- Slide 8 media: ant world -->
+<div class="slide-media slide-media-8">
+<img alt="Ant World — design your own world in Mico World" class="w-full h-full object-cover select-none pointer-events-none" src="assets/tablet_7.png"/>
+</div>
+
+</div>
+</div>
+
+<!-- Dot Carousel Dots (below the tablet screen) -->
+<div class="mt-5 flex items-center justify-center gap-2.5 sm:gap-4" data-purpose="slide-dots">
+<label for="slide-1" class="dot dot-1" title="01 — Mico World Intro Trailer"></label>
+<label for="slide-2" class="dot dot-2" title="02 — Welcome to Mico World"></label>
+<label for="slide-3" class="dot dot-3" title="03 — Explore &amp; Find Hidden Objects"></label>
+<label for="slide-4" class="dot dot-4" title="04 — Play, Color &amp; Create!"></label>
+<label for="slide-5" class="dot dot-5" title="05 — Draw Your Own Things"></label>
+<label for="slide-6" class="dot dot-6" title="06 — Your Doodles Become Stories"></label>
+<label for="slide-7" class="dot dot-7" title="07 — So Much to Discover"></label>
+<label for="slide-8" class="dot dot-8" title="08 — Ant World — Design Your Own World"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- END: GameIntro / Showcase -->
+
+<!-- BEGIN: StorySection -->
+<section class="w-full py-16 sm:py-24 bg-warmIvory border-y-2 border-neutral-200/80 relative" data-purpose="lore-and-story" id="story">
+<div class="max-w-7xl mx-auto px-6 sm:px-12 md:px-20 relative">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+<!-- Left Flanking Characters -->
+<div class="lg:col-span-3 flex lg:flex-col items-center justify-center gap-6 order-2 lg:order-1" data-purpose="flanking-characters-left">
+<div class="w-32 sm:w-44 lg:w-52 aspect-square rounded-3xl bg-white border-thick p-3 shadow-md transform -rotate-3 hover:rotate-0 transition-transform">
+<div class="w-full h-full rounded-2xl overflow-hidden bg-brandOrange/10 flex items-center justify-center">
+<img alt="Pip the Fox at the birdhouse" class="w-full h-full object-cover select-none pointer-events-none" src="assets/birdhouse_bird_egg.png"/>
+</div>
+</div>
+</div>
+<!-- Centered Story Content -->
+<div class="lg:col-span-6 text-center px-2 sm:px-6 order-1 lg:order-2" data-purpose="narrative-center-card">
+<h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-brandCharcoal font-display leading-tight mb-6">
+              One day, a quiet doorway opened into the Mico World at the edge of imagination.
+            </h2>
+<div class="space-y-4 max-w-xl mx-auto text-neutral-600 font-semibold text-sm sm:text-base leading-relaxed">
+<p>
+                It’s not usually visible, but on sunny mornings when children build with blocks and dream up worlds, you can meet the kind citizens of Mico World.
+              </p>
+<p>
+                With friendly woodland builders, cheerful insect friends, and blooming gardens filled with tactile surprises, this cozy world has no timers, no penalties, and no rigid rules.
+              </p>
+<p class="font-bold text-brandCharcoal text-base sm:text-lg pt-2">
+                Why don’t we go on a sunny journey together to discover the treasures hidden in the toy box?
+              </p>
+</div>
+<!-- Action buttons -->
+<div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+<a class="chunky-btn inline-flex items-center gap-2 px-6 py-3.5 bg-brandOrange text-white font-black text-sm uppercase tracking-wider rounded-2xl border-thick" href="demo.html">
+<span>Play Demo Online</span>
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" fill-rule="evenodd"></path>
+</svg>
+</a>
+<!-- Play Store Link -->
+<a class="chunky-btn inline-flex items-center gap-2 px-6 py-3.5 bg-brandGreen text-white font-black text-sm uppercase tracking-wider rounded-2xl border-thick" href="#hero">
+<!-- TODO: point to the real Google Play listing, e.g. https://play.google.com/store/apps/details?id=com.micoplaygames.micoworld -->
+<span>Get it on Google Play</span>
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.9 1.7L13.65 12 3.9 22.3c-.5-.25-.9-.75-.9-1.45V3.15c0-.7.4-1.2.9-1.45zM15.55 10.35l2.6 1.5 1.95-1.1c.6-.35.6-1.25 0-1.6l-1.95-1.1-2.6 1.5zM4.9 20.5l11.3-10.65-2.65-1.5L4.9 20.5zm0-17l11.3 10.65 2.65-1.5L4.9 3.5z"></path>
+</svg>
+</a>
+</div>
+</div>
+<!-- Right Flanking Characters -->
+<div class="lg:col-span-3 flex lg:flex-col items-center justify-center gap-6 order-3" data-purpose="flanking-characters-right">
+<div class="w-32 sm:w-44 lg:w-52 aspect-square rounded-3xl bg-white border-thick p-3 shadow-md transform rotate-3 hover:rotate-0 transition-transform">
+<div class="w-full h-full rounded-2xl overflow-hidden bg-brandBlue/10 flex items-center justify-center">
+<img alt="Luna the Butterfly in the garden" class="w-full h-full object-cover select-none pointer-events-none" src="assets/garden_chick.png"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: StorySection -->
+
+<!-- BEGIN: Devlog / Roadmap -->
+<section class="w-full py-16 sm:py-24 bg-warmIvory border-y-2 border-neutral-200/80" data-purpose="devlog-and-roadmap" id="devlog">
+<div class="max-w-5xl mx-auto px-6 sm:px-12 md:px-20">
+<div class="bg-white rounded-[32px] border-thick p-8 sm:p-12 shadow-sm relative overflow-hidden text-center">
+<!-- Playful corner badge -->
+<div class="inline-block px-4 py-1.5 rounded-full bg-brandYellow/30 text-amber-900 border-2 border-amber-900/30 text-xs font-black uppercase tracking-wider mb-4">
+          🚧 Early Stages · Our Roadmap
+        </div>
+<h3 class="text-2xl sm:text-3xl font-black text-brandCharcoal font-display">
+          Growing a Safer, Brighter Playground for All Ages
+        </h3>
+<p class="text-neutral-600 font-semibold max-w-xl mx-auto mt-3 text-sm sm:text-base">
+          Micoplay is at a very early stage of development. Today we focus on a safe, ad-free creative playground for curious kids — intuitive, open-ended pretend play, coloring, drawing and hidden-object discovery.
+        </p>
+<p class="text-neutral-600 font-semibold max-w-xl mx-auto mt-3 text-sm sm:text-base">
+          Our future goal is an open playground that runs right in your browser: a pretend-play and storytelling creativity tool — not just for kids, but for grown-up artists to create, share and bring their own worlds and stories to life.
+        </p>
+<p class="text-brandMuted max-w-xl mx-auto mt-3 text-xs sm:text-sm font-bold">
+          A web version of Mico World is on the official roadmap. Subscribe below to follow our progress and get early playtest invitations.
+        </p>
+<!-- Newsletter / Playtest Registration Form -->
+<form class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto" onsubmit="event.preventDefault(); alert('Thank you for joining the Mico World playtest waitlist!');">
+<input class="w-full px-5 py-3.5 rounded-2xl border-thick bg-cream text-brandCharcoal font-bold text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brandOrange" placeholder="Parent or educator email address..." required="" type="email"/>
+<button class="chunky-btn w-full sm:w-auto whitespace-nowrap px-6 py-3.5 bg-brandGreen text-brandCharcoal font-black text-sm uppercase tracking-wider rounded-2xl border-thick bg-[#90BE6D]" type="submit">
+            Join Playtest
+          </button>
+</form>
+<p class="text-xs text-neutral-400 font-bold mt-4">
+          🔒 Ad-free. No behavioral tracking. A safe digital playground for families.
+        </p>
+</div>
+</div>
+</section>
+<!-- END: Devlog / Roadmap -->
+</main>
+<!-- BEGIN: MainFooter -->
+<footer class="w-full bg-[#FAF5EA] border-t-2 border-neutral-300 py-10 px-6 sm:px-12 md:px-20 text-xs font-semibold text-neutral-500" data-purpose="site-footer">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+<!-- Studio Identity -->
+<div class="space-y-2">
+<div class="flex items-center">
+<img alt="Micoplay — Mico Play logo" class="h-7 sm:h-8 w-auto" src="assets/logo_mico_play.png"/>
+</div>
+<p class="text-[11px] leading-relaxed max-w-md text-neutral-500">
+          Mico World is a creative playground where kids explore, create, color and draw.<br/>
+          Contact: <a class="underline hover:text-brandCharcoal" href="mailto:hello@micoplaygames.com">hello@micoplaygames.com</a> • Family Support: 080-820-MICO
+        </p>
+<p class="text-[10px] text-neutral-400">
+          © 2026 Micoplay. All rights reserved. Mico World<sup>™</sup>, Micoplay<sup>™</sup> &amp; Micoplay Games<sup>™</sup> are trademarks of Micoplay.
+        </p>
+</div>
+<!-- Footer Links -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+<div class="flex flex-wrap gap-4 text-[12px] font-bold">
+<a class="hover:text-brandCharcoal transition-colors" href="privacy.html">Privacy Policy</a>
+<a class="hover:text-brandCharcoal transition-colors" href="terms.html">Terms of Use</a>
+<a class="hover:text-brandCharcoal transition-colors" href="demo.html">Play Demo</a>
+<a class="hover:text-brandCharcoal transition-colors" href="#devlog">Roadmap</a>
+</div>
+<!-- Social Icon Stubs -->
+<div class="flex items-center space-x-3 text-brandCharcoal">
+<a aria-label="Game Community" class="hover:text-brandOrange transition-colors" href="#">
+<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M7 2v11h3v9l7-12h-4l4-8z"></path>
+</svg>
+</a>
+<a aria-label="Video Channel" class="hover:text-brandOrange transition-colors" href="#">
+<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+</svg>
+</a>
+<a aria-label="Instagram" class="hover:text-brandOrange transition-colors" href="#">
+<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path>
+</svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- END: MainFooter -->
+<!-- Lightweight interaction feedback: smooth scroll for in-page anchors -->
+<script data-purpose="lightweight-interactive-handlers">
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // Firefox autoplay fix: explicitly mute + start the looping hero video
+      const heroVideo = document.querySelector('video[autoplay]');
+      if (heroVideo) {
+        heroVideo.muted = true;
+        heroVideo.defaultMuted = true;
+        const playHero = () => {
+          const p = heroVideo.play();
+          if (p && p.catch) p.catch(() => {});
+        };
+        ['loadeddata', 'canplay'].forEach(evt => heroVideo.addEventListener(evt, playHero));
+        document.addEventListener('click', playHero, { once: true });
+        playHero();
+      }
+
+      // Auto-rotate the game showcase carousel every 30 seconds
+      const slideIds = ['slide-1', 'slide-2', 'slide-3', 'slide-4', 'slide-5', 'slide-6', 'slide-7', 'slide-8'];
+      const carousel = document.getElementById('game');
+      if (carousel && slideIds.every(id => document.getElementById(id))) {
+        const nextSlide = () => {
+          const current = slideIds.findIndex(id => document.getElementById(id).checked);
+          document.getElementById(slideIds[(current + 1) % slideIds.length]).checked = true;
+        };
+        let timer = setInterval(nextSlide, 30000);
+        document.querySelectorAll('.dot').forEach(dot => {
+          dot.addEventListener('click', () => {
+            clearInterval(timer);
+            timer = setInterval(nextSlide, 30000);
+          });
+        });
+      }
+    });
+  </script>
+</body></html>
