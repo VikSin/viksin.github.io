@@ -448,10 +448,26 @@ Your browser does not support the video tag.
 <p class="text-brandMuted max-w-xl mx-auto mt-3 text-xs sm:text-sm font-bold">
           A web version of Mico World is on the official roadmap. Subscribe below to follow our progress and get early playtest invitations.
         </p>
-<!-- Newsletter / Playtest Registration Form -->
-<form class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto" onsubmit="event.preventDefault(); alert('Thank you for joining the Mico World playtest waitlist!');">
-<input class="w-full px-5 py-3.5 rounded-2xl border-thick bg-cream text-brandCharcoal font-bold text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brandOrange" placeholder="Parent or educator email address..." required="" type="email"/>
-<button class="chunky-btn w-full sm:w-auto whitespace-nowrap px-6 py-3.5 bg-brandGreen text-brandCharcoal font-black text-sm uppercase tracking-wider rounded-2xl border-thick bg-[#90BE6D]" type="submit">
+<!-- Newsletter / Playtest Registration Form (Web3Forms) -->
+<form class="mt-8 flex flex-col gap-4 max-w-md mx-auto text-left" action="https://api.web3forms.com/submit" method="POST">
+<input type="hidden" name="access_key" value="75a2f083-39d2-496a-bdef-73b173a42660"/>
+<input type="hidden" name="subject" value="Mico World — Early Access / Playtest Signup"/>
+<input type="hidden" name="from_name" value="Mico World Website"/>
+<!-- Honeypot anti-spam (leave empty) -->
+<input class="hidden" name="botcheck" style="display:none" type="checkbox"/>
+<label>
+<span class="block font-black text-xs uppercase tracking-wider text-brandMuted mb-1.5">Your name</span>
+<input class="w-full px-5 py-3.5 rounded-2xl border-thick bg-cream text-brandCharcoal font-bold text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brandOrange" name="name" placeholder="Parent or educator name..." required="" type="text"/>
+</label>
+<label>
+<span class="block font-black text-xs uppercase tracking-wider text-brandMuted mb-1.5">Email address</span>
+<input class="w-full px-5 py-3.5 rounded-2xl border-thick bg-cream text-brandCharcoal font-bold text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brandOrange" name="email" placeholder="Parent or educator email address..." required="" type="email"/>
+</label>
+<label>
+<span class="block font-black text-xs uppercase tracking-wider text-brandMuted mb-1.5">Message</span>
+<textarea class="w-full px-5 py-3.5 rounded-2xl border-thick bg-cream text-brandCharcoal font-bold text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brandOrange" name="message" placeholder="Anything you'd love to see in Mico World's early access?" required="" rows="3"></textarea>
+</label>
+<button class="chunky-btn w-full whitespace-nowrap px-6 py-3.5 bg-brandGreen text-brandCharcoal font-black text-sm uppercase tracking-wider rounded-2xl border-thick bg-[#90BE6D]" type="submit">
             Join Playtest
           </button>
 </form>
@@ -473,7 +489,7 @@ Your browser does not support the video tag.
 </div>
 <p class="text-[11px] leading-relaxed max-w-md text-neutral-500">
           Mico World is a creative playground where kids explore, create, color and draw.<br/>
-          Contact: <a class="underline hover:text-brandCharcoal" href="mailto:hello@micoplaygames.com">hello@micoplaygames.com</a> • Family Support: 080-820-MICO
+          Contact: <a class="underline hover:text-brandCharcoal" href="mailto:hello@micoplaygames.com">hello@micoplaygames.com</a>
         </p>
 <p class="text-[10px] text-neutral-400">
           © 2026 Micoplay. All rights reserved. Mico World<sup>™</sup>, Micoplay<sup>™</sup> &amp; Micoplay Games<sup>™</sup> are trademarks of Micoplay.
